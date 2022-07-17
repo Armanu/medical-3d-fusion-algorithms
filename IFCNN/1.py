@@ -31,7 +31,7 @@ else:
 model = myIFCNN(fuse_scheme=fuse_scheme)
 model.load_state_dict(torch.load('snapshots/'+ model_name + '.pth'))
 model.eval()
-model = model.cuda()
+#model = model.cuda()
 
 from utils.myDatasets import ImagePair
 
@@ -94,7 +94,7 @@ for j in range(1):
 
         # perform image fusion
         with torch.no_grad():
-            res = model(Variable(img1.cuda()), Variable(img2.cuda()))
+            res = model(Variable(img1), Variable(img2))
             res = denorm(mean, std, res[0]).clamp(0, 1) * 255
             res_img = res.cpu().data.numpy().astype('uint8')
             img = res_img.transpose([1, 2, 0])

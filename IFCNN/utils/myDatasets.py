@@ -22,13 +22,13 @@ class ImagePair(data.Dataset):
         return Image.open(path).convert(self.mode)
     
     def is_image_file(self, filename):
-        return any(filename.endswith(extension) for extension in IMG_EXTENSIONS)
+        return True
 
     def get_pair(self):
         if self.is_image_file(self.impath1):
-            img1 = self.loader(self.impath1)
+            img1 = self.impath1
         if self.is_image_file(self.impath2):
-            img2 = self.loader(self.impath2)
+            img2 = self.impath2
         if self.transform is not None:
             img1 = self.transform(img1)
             img2 = self.transform(img2)

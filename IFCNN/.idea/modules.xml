@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/IFCNN-master.iml" filepath="$PROJECT_DIR$/.idea/IFCNN-master.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/IFCNN.iml" filepath="$PROJECT_DIR$/.idea/IFCNN.iml" />
     </modules>
   </component>
 </project>

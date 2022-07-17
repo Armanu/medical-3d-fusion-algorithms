@@ -1,6 +1,6 @@
 #include "mex.h" 
-#include "include\array.h"
-#include "include\fast_blf.h"
+#include "include/array.h"
+#include "include/fast_blf.h"
 
 
 using namespace std; 

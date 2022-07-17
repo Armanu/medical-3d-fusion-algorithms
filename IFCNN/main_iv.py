@@ -37,7 +37,7 @@ else:
 model = myIFCNN(fuse_scheme=fuse_scheme)
 model.load_state_dict(torch.load('snapshots/' + model_name + '.pth'))
 model.eval()
-model = model.cuda()
+#model = model.cuda()
 
 # ## 3. Use IFCNN to respectively fuse CMF, IV and MD datasets
 # Fusion images are saved in the 'results' folder under your current folder.
@@ -82,7 +82,7 @@ for i in range(len(img_ir_pathes)):
 
 	# perform image fusion
 	with torch.no_grad():
-		res = model(Variable(img1.cuda()), Variable(img2.cuda()))
+		res = model(Variable(img1), Variable(img2))
 		res = denorm(mean, std, res[0]).clamp(0, 1) * 255
 		res_img = res.cpu().data.numpy().astype('uint8')
 		img = res_img.transpose([1, 2, 0])
@@ -94,9 +94,12 @@ for i in range(len(img_ir_pathes)):
 			img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
 			img = Image.fromarray(img)
 			img.save('results/new_dataset/' + filename + names_ir[index], format='PNG', compress_level=0)
+			print('results/new_dataset/' + filename + names_ir[index])
+
 		else:
 			img = Image.fromarray(img)
 			img.save('results/IR-VIS/' + filename + '.png', format='PNG', compress_level=0)
+			print('results/IR-VIS/' + filename + '.png')
 
 # when evluating time costs, remember to stop writing images by setting is_save = False
 proc_time = time.time() - begin_time
