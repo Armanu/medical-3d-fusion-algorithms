@@ -47,7 +47,6 @@ disp(si)
 disp(ci)
 disp(ri)
 P = niftiread('./HANPT.nii');
-T=P;
 for s = 1:si
 V1 = double(squeeze(V(:,:,s)));
 %V1 = cat(3, V1, V1, V1);
@@ -71,7 +70,7 @@ P1 = double(squeeze(P(:,:,s)));
 P2 = P1;
 for pr = 1:ri
     for pc = 1:ci
-        pres = round(abs((P1(pr,pc)/4)*255));
+        pres = abs((P1(pr,pc)/4)*255);
         if (pres > 255)
             P2(pr,pc) = 255;
         elseif (pres < 0)

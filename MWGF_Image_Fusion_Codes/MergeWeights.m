@@ -44,8 +44,11 @@ function [ww1, ww2] = MergeWeights(wtL1, wtL2, wtS1, wtS2, para)
     LL = bwlabel(baseLL, 8);
     tempHist = tabulate(LL(:));
     [~, tempIdx] = max(tempHist(2:end, 2));
-    weightPost(LL == tempIdx) = 1;
+    %weightPost(LL == tempIdx) = 1;
+    disp(LL);
+    disp(max(tempHist(2:end, 2)));
 
+    weightPost(LL == tempIdx) = 1;
     % ----- Delete the hole --
     [L,num]=bwlabel(~weightPost); % select the max region 0
     maxarea = 0;
