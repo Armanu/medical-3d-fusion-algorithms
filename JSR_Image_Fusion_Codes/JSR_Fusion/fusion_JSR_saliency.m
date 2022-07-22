@@ -3,20 +3,28 @@
 
 % function fusion_JSR_saliency
 addpath(genpath('./dictionary'));
-for inde=1:10
+V = niftiread('./HANCT.nii');
+[ri,ci,si] = size(V);
+disp(si)
+disp(ci)
+disp(ri)
+P = niftiread('./HANPT.nii');
+for inde=1:si
 index = inde;
 disp(num2str(index));
+V1 = double(squeeze(V(:,:,si)));
+P1 = double(squeeze(P(:,:,si)));
 
 matName = strcat('D_unit7_im',num2str(index));
 matName = strcat(matName, '.dat');
 load(matName, '-mat');
 
-path1 = ['../../_________________________DATA/mid/Test_ir/',num2str(index),'.bmp'];
-path2 = ['../../_________________________DATA/mid/Test_ir/',num2str(index),'.bmp'];
-fused_path = ['../../融合结果/3/',num2str(index),'.bmp'];
+%path1 = ['../../_________________________DATA/mid/Test_ir/',num2str(index),'.bmp'];
+%path2 = ['../../_________________________DATA/mid/Test_ir/',num2str(index),'.bmp'];
+%fused_path = ['../../融合结果/3/',num2str(index),'.bmp'];
 
-source_image1 = imread(path1);
-source_image2 = imread(path2);
+source_image1 = V1;
+source_image2 = P1;
 
 I1 = im2double(source_image1);
 I2 = im2double(source_image2);
@@ -65,7 +73,7 @@ tic
 %     c = omp(D_Joint, V_Joint(:,i),[], k);
 %     C(:,i) = c;
 % end
-C = omp(D_Joint, V_Joint,[], k);
+C = omp2(D_Joint, V_Joint,[], k);
 toc
 disp('OMP-求解系数 结束');
 
@@ -165,13 +173,14 @@ for i=4:step:(m-3)
 end
 disp('重构结束');
 figure;
-imshow(fusion);
+%imshow(fusion);
 
-imwrite(fusion,fused_path,'png');
-
+%imwrite(fusion,fused_path,'png');
+T(:,:,si) = fusion;
+end
+niftiwrite(T,'outbrain.nii');
 clear Vi1;
 clear Vi2;
-end
 
 % end
 

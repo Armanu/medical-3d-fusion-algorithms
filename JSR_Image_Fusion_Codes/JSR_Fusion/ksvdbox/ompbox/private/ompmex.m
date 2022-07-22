@@ -20,3 +20,4 @@
 %  ronrubin@cs
 %
 %  April 2009
+GAMMA = OMPMEX(D,X,DtX,G,L,SPARSE_G,MSGDELTA,PROFILE);
