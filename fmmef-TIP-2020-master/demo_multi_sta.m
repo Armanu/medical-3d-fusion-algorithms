@@ -24,9 +24,24 @@
 clear;
 close all;
 addpath(genpath(pwd));
+V = niftiread('./HANCT.nii');
+
+[ri,ci,si] = size(V);
+disp(si)
+disp(ci)
+disp(ri)
+P = niftiread('./HANPT.nii');
+for s = 1:si
+V1 = double(squeeze(V(:,:,s)));
+P1 = double(squeeze(P(:,:,s)));
+V13 = cat(3, V1, V1, V1);
+P13 = cat(3, P1, P1, P1);
+imwrite(V13,'New Folder/c.png','png');
+imwrite(P13,'New Folder/p.png','png');
 
 %static scenes
-imgSeqColor= loadImg('Chinese_garden_Bartlomiej Okonek'); % [0,1]
+imgSeqColor= loadImg('New Folder',1); % [0,1]
+%disp(imgSeqColor.shape)
 %     imgSeqColor = downSample(imgSeqColor, 1024);
 
 %% the finest scale
@@ -44,6 +59,7 @@ N2= cell(nlev,1);
 
 r2=4;
 for ii=1:nlev
+    disp(ii)
     [ D2{ii},i_mean2,aa2{ii},N2{ii}] = scale_interm(i_mean1,r2);
     i_mean1=i_mean2;
 end
@@ -67,8 +83,12 @@ end
 fI=zeros(size(aa1));
 fI(1:2:size(aa1,1),1:2:size(aa1,2))=B2;
 B1=boxfilter(fI, r1)./ N1;
-C_out=repmat(B1,[1 1 3])+D1;
+C_out=B1+rgb2gray(D1);
 toc
 
-figure,imshow(C_out)
-
+%figure,imshow(C_out)
+delete 'New Folder/p.png'
+delete 'New Folder/c.png'
+T(:,:,s) = C_out;
+end
+niftiwrite(T,'outbrain.nii');
