@@ -1,34 +1,47 @@
 clear all
 clc
 
+addpath(genpath('/Users/arman/Library/Application Support/MathWorks/MATLAB Add-Ons/Collections/vlfeat_matconvnet/matlab/mex')); % matconvnet path
+
 %load vgg19
-net = load('./models/imagenet-vgg-verydeep-19.mat');
+net = load('imagenet-vgg-verydeep-19.mat');
 net = vl_simplenn_tidy(net);
 
+V = niftiread('./HANCT.nii');
+[ri,ci,si] = size(V);
+disp(si)
+disp(ci)
+disp(ri)
+P = niftiread('./HANPT.nii');
+for s = 1:si
+V1 = double(squeeze(V(:,:,s)));
+P1 = double(squeeze(P(:,:,s)));
+
 % testing dataset
-test_path_ir = './IV_images/IR/';
-fileFolder_ir=fullfile(test_path_ir);
-dirOutput_ir =dir(fullfile(fileFolder_ir,'*'));
-num_ir = length(dirOutput_ir);
+% test_path_ir = './IV_images/IR/';
+% fileFolder_ir=fullfile(test_path_ir);
+% dirOutput_ir =dir(fullfile(fileFolder_ir,'*'));
+% num_ir = length(dirOutput_ir);
+% 
+% test_path_vis = replace(test_path_ir, '/IR/', '/VIS/');
+% fileFolder_vis=fullfile(test_path_vis);
+% dirOutput_vis =dir(fullfile(fileFolder_vis,'*'));
 
-test_path_vis = replace(test_path_ir, '/IR/', '/VIS/');
-fileFolder_vis=fullfile(test_path_vis);
-dirOutput_vis =dir(fullfile(fileFolder_vis,'*'));
-
-for i=3:num_ir
-index = i;
-disp(num2str(index));
-
-path1 = [test_path_ir,dirOutput_ir(i).name]; % IR image
-path2 = [test_path_vis,dirOutput_vis(i).name]; % VIS image
-fused_path = ['./fused_iv/fused_vggml_',dirOutput_ir(i).name];
-
-image1 = imread(path1);
-image2 = imread(path2);
-image1 = im2double(image1);
-image2 = im2double(image2);
+% for i=3:num_ir
+% index = i;
+% disp(num2str(index));
+% 
+% path1 = [test_path_ir,dirOutput_ir(i).name]; % IR image
+% path2 = [test_path_vis,dirOutput_vis(i).name]; % VIS image
+% fused_path = ['fused_vggml_',dirOutput_ir(i).name];
+% 
+% image1 = imread(path1);
+% image2 = imread(path2);
+image1 = im2double(V1);
+image2 = im2double(P1);
 
 [h,w,d] = size(image1);
+disp(w)
 isRe = 0;
 if d > 1
     image1 = rgb2gray(image1);
@@ -36,14 +49,23 @@ if d > 1
 end
 if h < 224
     isRe = 1;
+     disp('heree')
     image1 = imresize(image1, [224, w]);
     image2 = imresize(image2, [224, w]);
+     [h,w,d] = size(image1);
+    disp(h)
 end
 if w < 224
     isRe = 1;
+    disp('hree')
     image1 = imresize(image1, [h, 224]);
     image2 = imresize(image2, [h, 224]);
+    [h,w,d] = size(image1);
+    disp(w)
 end
+[h,w,d] = size(image1);
+disp(w)
+disp(h)
 
 tic;
 % Highpass filter test image
@@ -131,7 +153,8 @@ toc;
 if isRe==1
     fusion_im = imresize(fusion_im, [h, w]);
 end
-imwrite(fusion_im,fused_path,'png');
+T(:,:,s) = fusion_im;
 end
+niftiwrite(T,'outbrain.nii');
 
 
