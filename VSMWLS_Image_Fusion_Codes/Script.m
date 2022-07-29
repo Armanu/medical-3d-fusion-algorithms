@@ -7,42 +7,32 @@
 clear all
 close all
 
-label='';
-for k = 1:5
-if k==1
-    label='_gau_001';
-end
-if k==2
-    label='_gau_0005';
-end
-if k==3
-    label='_sp_01';
-end
-if k==4
-    label='_sp_02';
-end
-if k==5
-    label='_poi';
-end
-disp(label);
 
-for i=1:10
-index = i;
+
+V = niftiread('./HANCT.nii');
+[ri,ci,si] = size(V);
+disp(si)
+disp(ci)
+disp(ri)
+P = niftiread('./HANPT.nii');
+for s = 1:si
+V1 = double(squeeze(V(:,:,s)));
+P1 = double(squeeze(P(:,:,s)));
 
 % path1 = ['./MF_images/image',num2str(index),'_left.png'];
 % path2 = ['./MF_images/image',num2str(index),'_right.png'];
 % fused_path = ['./fused_mf/fused',num2str(index),'_wls.png'];
 
-path1 = ['./mf_noise_images/image',num2str(i),label,'_left.png'];
-path2 = ['./mf_noise_images/image',num2str(i),label,'_right.png'];
-fused_path = ['./fused_mf_noise/fused',num2str(i),label,'_wls.png'];
+%path1 = ['./mf_noise_images/image',num2str(i),label,'_left.png'];
+%path2 = ['./mf_noise_images/image',num2str(i),label,'_right.png'];
+%fused_path = ['./fused_mf_noise/fused1',num2str(i),label,'_wls.png'];
 
 % I1 is a visible image, and I2 is an infrared image.
-I1 = imread(path1); 
-I2 = imread(path2);
+%I1 = imread(path1); 
+%I2 = imread(path2);
 
-I1 = im2double(I1);
-I2 = im2double(I2);
+I1 = im2double(V1);
+I2 = im2double(P1);
 
 % figure;imshow(I1);
 % figure;imshow(I2);
@@ -51,8 +41,9 @@ fused = WLS_Fusion(I1,I2);
 toc
 
 % figure;imshow(fused);
-imwrite(fused,fused_path,'png');
+%imwrite(fused,fused_path,'png');
+T(:,:,s) = fused;
+end
+niftiwrite(T,'outbrain.nii');
 
-end
-end
 
