@@ -5,7 +5,7 @@
 clear all
 clc
 
-addpath(genpath('D:\develop\matconvnet\matlab\')); % matconvnet path
+addpath(genpath('/Users/arman/Library/Application Support/MathWorks/MATLAB Add-Ons/Collections/vlfeat_matconvnet/matlab/mex')); % matconvnet path
 % load the pre-trained model - ResNet-50
 model_path = './models/';
 % http://www.vlfeat.org/matconvnet/pretrained/
@@ -28,8 +28,18 @@ net_res4fx = net;
 
 %% Start
 n = 20; % number of sourc image
+
+
 time = zeros(n,1);
 
+V = niftiread('./HANCT.nii');
+[ri,ci,si] = size(V);
+disp(si)
+disp(ci)
+disp(ri)
+P = niftiread('./HANPT.nii');
+for s = 1:si
+V1 = double(squeeze(V(:,:,s)));
 % testing dataset
 test_path_ir = './IV_images/IR/';
 fileFolder_ir=fullfile(test_path_ir);
@@ -39,21 +49,22 @@ num_ir = length(dirOutput_ir);
 test_path_vis = replace(test_path_ir, '/IR/', '/VIS/');
 fileFolder_vis=fullfile(test_path_vis);
 dirOutput_vis =dir(fullfile(fileFolder_vis,'*'));
+P1 = double(squeeze(P(:,:,s)));
 
-for i=3:num_ir
-    index = i;
-    disp(num2str(index));
-    
-    % infrared and visible images
-    path1 = [test_path_ir,dirOutput_ir(i).name]; % IR image
-    path2 = [test_path_vis,dirOutput_vis(i).name]; % VIS image
-
-    % block - 5*5
-    % l1 norm
-    fuse_path5 = ['./fused_iv/fused_resnet_zca_',dirOutput_ir(i).name];
-    
-    image1 = imread(path1);
-    image2 = imread(path2);
+% for i=3:num_ir
+%     index = i;
+%     disp(num2str(index));
+%     
+%     % infrared and visible images
+%     path1 = [test_path_ir,dirOutput_ir(i).name]; % IR image
+%     path2 = [test_path_vis,dirOutput_vis(i).name]; % VIS image
+% 
+%     % block - 5*5
+%     % l1 norm
+%    fuse_path5 = ['fused_resnet_zca_',dirOutput_ir(s).name];
+%     
+    image1 = V1;
+    image2 = P1;
     image1 = im2double(image1);
     image2 = im2double(image2);
 
@@ -99,7 +110,9 @@ for i=3:num_ir
     time(i) = toc;
 
 %     imwrite(F_relu4,fuse_path4,'png');
-    imwrite(F_relu5,fuse_path5,'png');
+    %imwrite(F_relu5,fuse_path5,'png');
+T(:,:,s) = F_relu5;
 end
+niftiwrite(T,'outbrain.nii');
 
 
