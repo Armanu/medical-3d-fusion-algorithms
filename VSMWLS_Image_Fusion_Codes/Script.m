@@ -10,14 +10,12 @@ close all
 
 
 V = niftiread('./HANCT.nii');
-[ri,ci,si] = size(V);
-disp(si)
-disp(ci)
-disp(ri)
 P = niftiread('./HANPT.nii');
+[ri,ci,si] = size(V);
+
 for s = 1:si
-V1 = double(squeeze(V(:,:,s)));
-P1 = double(squeeze(P(:,:,s)));
+V1 = (double(squeeze(V(:,:,s)))/1000)*255;
+P1 = (double(squeeze(P(:,:,s)))/4)*255;
 
 % path1 = ['./MF_images/image',num2str(index),'_left.png'];
 % path2 = ['./MF_images/image',num2str(index),'_right.png'];
