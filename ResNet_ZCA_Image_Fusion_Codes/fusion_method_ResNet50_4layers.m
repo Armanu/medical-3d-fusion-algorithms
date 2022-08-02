@@ -33,23 +33,21 @@ n = 20; % number of sourc image
 time = zeros(n,1);
 
 V = niftiread('./HANCT.nii');
-[ri,ci,si] = size(V);
-disp(si)
-disp(ci)
-disp(ri)
 P = niftiread('./HANPT.nii');
+[ri,ci,si] = size(V);
 for s = 1:si
-V1 = double(squeeze(V(:,:,s)));
-% testing dataset
-test_path_ir = './IV_images/IR/';
-fileFolder_ir=fullfile(test_path_ir);
-dirOutput_ir =dir(fullfile(fileFolder_ir,'*'));
-num_ir = length(dirOutput_ir);
+V1 = (double(squeeze(V(:,:,s)))/1000)*255;
+P1 = (double(squeeze(P(:,:,s)))/4)*255;
 
-test_path_vis = replace(test_path_ir, '/IR/', '/VIS/');
-fileFolder_vis=fullfile(test_path_vis);
-dirOutput_vis =dir(fullfile(fileFolder_vis,'*'));
-P1 = double(squeeze(P(:,:,s)));
+% % testing dataset
+% test_path_ir = './IV_images/IR/';
+% fileFolder_ir=fullfile(test_path_ir);
+% dirOutput_ir =dir(fullfile(fileFolder_ir,'*'));
+% num_ir = length(dirOutput_ir);
+% 
+% test_path_vis = replace(test_path_ir, '/IR/', '/VIS/');
+% fileFolder_vis=fullfile(test_path_vis);
+% dirOutput_vis =dir(fullfile(fileFolder_vis,'*'));
 
 % for i=3:num_ir
 %     index = i;
