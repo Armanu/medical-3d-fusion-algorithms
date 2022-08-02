@@ -8,14 +8,11 @@ net = load('imagenet-vgg-verydeep-19.mat');
 net = vl_simplenn_tidy(net);
 
 V = niftiread('./HANCT.nii');
-[ri,ci,si] = size(V);
-disp(si)
-disp(ci)
-disp(ri)
 P = niftiread('./HANPT.nii');
+[ri,ci,si] = size(V);
 for s = 1:si
-V1 = double(squeeze(V(:,:,s)));
-P1 = double(squeeze(P(:,:,s)));
+V1 = (double(squeeze(V(:,:,s)))/1000)*255;
+P1 = (double(squeeze(P(:,:,s)))/4)*255;
 
 % testing dataset
 % test_path_ir = './IV_images/IR/';
