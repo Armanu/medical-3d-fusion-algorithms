@@ -43,9 +43,6 @@
 
 V = niftiread('./HANCT.nii');
 [ri,ci,si] = size(V);
-disp(si)
-disp(ci)
-disp(ri)
 P = niftiread('./HANPT.nii');
 T=P;
 for s = 1:si
