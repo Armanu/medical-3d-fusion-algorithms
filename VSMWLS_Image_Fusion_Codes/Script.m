@@ -6,13 +6,9 @@
 
 clear all
 close all
-
-
-
 V = niftiread('./HANCT.nii');
 P = niftiread('./HANPT.nii');
 [ri,ci,si] = size(V);
-
 for s = 1:si
 V1 = (double(squeeze(V(:,:,s)))/1000)*255;
 P1 = (double(squeeze(P(:,:,s)))/4)*255;
