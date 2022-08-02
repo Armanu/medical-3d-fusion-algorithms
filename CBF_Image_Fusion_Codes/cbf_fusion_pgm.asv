@@ -53,11 +53,11 @@ ksize=11;   %%% Kernal Size  (should be odd).
 
 % image_left = ['../_________________________DATA/mid/Test_ir/',num2str(i),'.bmp'];
 % image_right = ['../_________________________DATA/mid/Test_vi/',num2str(i),'.bmp'];
-% fused_path = ['../2/',num2str(i),'.bmp'];
-% 
-% image_left = ['../road/ir/',num2str(i),'.jpg'];
-% image_right = ['../road/vi/',num2str(i),'.jpg'];
-% fused_path = ['result/',num2str(i),'.bmp'];
+% fused_path = ['../��������/2/',num2str(i),'.bmp'];
+
+image_left = ['../road/ir/',num2str(i),'.jpg'];
+image_right = ['../road/vi/',num2str(i),'.jpg'];
+fused_path = ['result/',num2str(i),'.bmp'];
 
 V = niftiread('./HANCT.nii');
 [ri,ci,si] = size(V);
@@ -66,10 +66,8 @@ disp(ci)
 disp(ri)
 P = niftiread('./HANPT.nii');
 for s = 1:si
-V1 = (double(squeeze(V(:,:,s)))/1000)*255;
-P1 = (double(squeeze(P(:,:,s)))/4)*255;
-%disp(max(V1))
-
+V1 = double(squeeze(V(:,:,s)));
+P1 = double(squeeze(P(:,:,s)));
 
 %x{1}=imread(image_left);
 %x{2}=imread(image_right); 
@@ -105,7 +103,7 @@ toc
 xfused8=uint8(xfused);
 % figure,imshow(xfused8);
 
-% imwrite(xfused8,fused_path,'png');
+imwrite(xfused8,fused_path,'png');
 
 % if(strncmp(inp_image,'gun',3))
 %    figure,imagesc(x{1}),colormap gray
@@ -121,7 +119,7 @@ xfused8=uint8(xfused);
 
 % fusion_perform_fn(xfused8,x);
 
-T(:,:,s) = xfused8;
+T(:,:,s) = F_relu5;
 end
 niftiwrite(T,'outbrain.nii');
-% end
+end
