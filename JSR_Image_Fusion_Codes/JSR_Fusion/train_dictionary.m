@@ -1,16 +1,19 @@
 % ×ÖµäÑ§Ï°£¬K-SVD
 function train_dictionary
-for i=1:10
-disp(num2str(i));
-index = i;
-path1 = ['../../_________________________DATA/mid/Test_ir/',num2str(index),'.bmp'];
-path2 = ['../../_________________________DATA/mid/Test_ir/',num2str(index),'.bmp'];
+V = niftiread('./HANCT.nii');
+[ri,ci,si] = size(V);
+disp(si)
+disp(ci)
+disp(ri)
+P = niftiread('./HANPT.nii');
+for inde=1:si
+index = inde;
+disp(num2str(index));
+V1 = (double(squeeze(V(:,:,si)))/1000)*255;
+P1 = (double(squeeze(P(:,:,si)))/4)*255;
 
-source_image1 = imread(path1);
-source_image2 = imread(path2);
-
-I1 = im2double(source_image1);
-I2 = im2double(source_image2);
+I1 = im2double(V1);
+I2 = im2double(P1);
 
 [m,n] = size(I1);
 
@@ -63,7 +66,9 @@ save(D_name,'D');
 clear Vi1;
 clear Vi2;
 end
-end
+% T(:,:,si) = fusion;
+% end
+% niftiwrite(T,'outbrain.nii');
 
 
 

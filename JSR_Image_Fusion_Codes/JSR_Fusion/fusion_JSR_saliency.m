@@ -12,12 +12,12 @@ P = niftiread('./HANPT.nii');
 for inde=1:si
 index = inde;
 disp(num2str(index));
-V1 = double(squeeze(V(:,:,si)));
-P1 = double(squeeze(P(:,:,si)));
+V1 = (double(squeeze(V(:,:,s)))/1000)*255;
+P1 = (double(squeeze(P(:,:,s)))/4)*255;
 
-matName = strcat('D_unit7_im',num2str(index));
-matName = strcat(matName, '.dat');
-load(matName, '-mat');
+%matName = strcat('D_unit7_im',num2str(index));
+%matName = strcat(matName, '.dat');
+%load(matName, '-mat');
 
 %path1 = ['../../_________________________DATA/mid/Test_ir/',num2str(index),'.bmp'];
 %path2 = ['../../_________________________DATA/mid/Test_ir/',num2str(index),'.bmp'];
@@ -55,6 +55,13 @@ patch_num = count;
 % KSVDÑµÁ·×Ó×Öµä
 dic_size = 256;
 k = 16;
+% params.data = Vc;
+% params.Tdata = k;
+% params.dictsize = dic_size;
+% params.iternum = 50;
+% params.memusage = 'high';
+% [D,X,err] = ksvd(params,'');
+
 
 V_Joint = zeros(2*row_unit, patch_num);
 V_Joint(1:(row_unit),:) = Vi1;
