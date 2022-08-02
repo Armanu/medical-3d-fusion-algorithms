@@ -24,15 +24,12 @@ lambda = 30;
 % path_Vis = '.\image\Trees4917_Vis.jpg'; path_IR = '.\image\Trees4917_IR.jpg';
 % path_Vis = '.\image\Octec_Vis.jpg';     path_IR = '.\image\Octec_IR.jpg';
 % path_Vis = '.\image\Road_Vis.jpg';      path_IR = '.\image\Road_IR.jpg';
-path_Vis = './ir/10.bmp'; path_IR = './vis/10.bmp';
+%path_Vis = './ir/10.bmp'; path_IR = './vis/10.bmp';
 % path_Vis = '.\image\Kayak_Vis.jpg';     path_IR = '.\image\Kayak_IR.jpg';
 % path_Vis = '.\image\Steamboat_Vis.jpg'; path_IR = '.\image\Steamboat_IR.jpg';
 V = niftiread('./HANCT.nii');
-[ri,ci,si] = size(V);
-disp(si)
-disp(ci)
-disp(ri)
 P = niftiread('./HANPT.nii');
+[ri,ci,si] = size(V);
 for s = 1:si
 V1 = double(squeeze(V(:,:,s)));
 V2 = V1;
