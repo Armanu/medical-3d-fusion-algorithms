@@ -60,33 +60,16 @@ ksize=11;   %%% Kernal Size  (should be odd).
 % fused_path = ['result/',num2str(i),'.bmp'];
 
 V = niftiread('./HANCT.nii');
-[ri,ci,si] = size(V);
-disp(si)
-disp(ci)
-disp(ri)
 P = niftiread('./HANPT.nii');
+[ri,ci,si] = size(V);
+
 for s = 1:si
 V1 = (double(squeeze(V(:,:,s)))/1000)*255;
 P1 = (double(squeeze(P(:,:,s)))/4)*255;
-%disp(max(V1))
 
-
-%x{1}=imread(image_left);
-%x{2}=imread(image_right); 
 x{1}=V1;
 x{2}=P1;
-% arr=['A';'B'];
-% for m=1:2
-%    string=arr(m);
-% %    inp_image=strcat('images\med256',string,'.jpg');
-%    inp_image=strcat('images\office256',string,'.tif');
-% %    inp_image=strcat('images\gun',string,'.gif');
-% 
-%    x{m}=imread(inp_image);
-%    if(size(x{m},3)==3)
-%       x{m}=rgb2gray(x{m});
-%    end
-% end
+
 [M,N]=size(x{1});
 
 %%% Cross Bilateral Filter.
