@@ -25,15 +25,27 @@ clear;
 close all;
 addpath(genpath(pwd));
 V = niftiread('./HANCT.nii');
-
-[ri,ci,si] = size(V);
-disp(si)
-disp(ci)
-disp(ri)
 P = niftiread('./HANPT.nii');
+PF = P(:);
+
+[x, y, z] = ind2sub(size(P), find(P == max(P(:))));
+val = P(x,y,z);
+PMA = max(PF);
+PMI = min(PF);
+disp(PMI)
+disp(PMA)
+disp("-------")
+
+VF = V(:);
+VMA = max(VF);
+VMI = min(VF);
+disp(VMI)
+disp(VMA)
+disp("-------")
+[ri,ci,si] = size(V);
 for s = 1:si
-V1 = double(squeeze(V(:,:,s)));
-P1 = double(squeeze(P(:,:,s)));
+V1 = (double(squeeze(V(:,:,s)))/(VMA-VMI))*255;
+P1 = (double(squeeze(P(:,:,s)))/(PMA-PMI))*255;
 V13 = cat(3, V1, V1, V1);
 P13 = cat(3, P1, P1, P1);
 imwrite(V13,'New Folder/c.png','png');
@@ -59,7 +71,7 @@ N2= cell(nlev,1);
 
 r2=4;
 for ii=1:nlev
-    disp(ii)
+%     disp(ii)
     [ D2{ii},i_mean2,aa2{ii},N2{ii}] = scale_interm(i_mean1,r2);
     i_mean1=i_mean2;
 end
@@ -90,5 +102,7 @@ toc
 delete 'New Folder/p.png'
 delete 'New Folder/c.png'
 T(:,:,s) = C_out;
+
 end
 niftiwrite(T,'outbrain.nii');
+T2 = T(:);
