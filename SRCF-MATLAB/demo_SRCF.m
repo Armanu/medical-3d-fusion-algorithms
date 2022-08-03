@@ -10,7 +10,6 @@
 clc,clear all,close all;
 addpath('Utils','Utils/ompbox10','Utils/Metrics','Utils/GCO/bin','Utils/GCO/');
 
-
 %====< Test Dataset >====%
 dataPath = 'Data/GrayscaleDataset';
 % dataPath = 'Data\LytroDataset';
