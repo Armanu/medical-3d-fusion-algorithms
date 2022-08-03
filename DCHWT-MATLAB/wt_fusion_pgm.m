@@ -8,25 +8,38 @@
 % clear all;
 % clc;
 
-label='';
-for k = 1:5
-if k==1
-    label='_gau_001';
-end
-if k==2
-    label='_gau_0005';
-end
-if k==3
-    label='_sp_01';
-end
-if k==4
-    label='_sp_02';
-end
-if k==5
-    label='_poi';
-end
-disp(label);
-for i=1:10
+% label='';
+% for k = 1:5
+% if k==1
+%     label='_gau_001';
+% end
+% if k==2
+%     label='_gau_0005';
+% end
+% if k==3
+%     label='_sp_01';
+% end
+% if k==4
+%     label='_sp_02';
+% end
+% if k==5
+%     label='_poi';
+% end
+% disp(label);
+% for i=1:10
+
+V = niftiread('./HANCT.nii');
+P = niftiread('./HANPT.nii');
+PF = P(:);
+PMA = max(PF);
+PMI = min(PF);
+VF = V(:);
+VMA = max(VF);
+VMI = min(VF);
+[ri,ci,si] = size(V);
+for s = 1:si
+V1 = (double(squeeze(V(:,:,s)))/(VMA-VMI))*255;
+P1 = (double(squeeze(P(:,:,s)))/(PMA-PMI))*255;
 %     i=6
 %%% Fusion Method Parameters.
 detail_exponent=1; %%% Fusion Method2 (SIViP 2011), db8-> detail_exponent=1;
@@ -37,17 +50,17 @@ wname='DCHWT'; %% DCHWT coif5 db16 db8 sym8 bior6.8
 % image_left = ['./MF_images/image',num2str(i),'_left.png'];
 % image_right = ['./MF_images/image',num2str(i),'_right.png'];
 % fused_path = ['./fused_mf/fused',num2str(i),'_dchwt.png'];
-
-image_left = ['./mf_noise_images/image',num2str(i),label,'_left.png'];
-image_right = ['./mf_noise_images/image',num2str(i),label,'_right.png'];
-fused_path = ['./fused_mf_noise/fused',num2str(i),label,'_dchwt.png'];
+% 
+% image_left = ['./mf_noise_images/image',num2str(i),label,'_left.png'];
+% image_right = ['./mf_noise_images/image',num2str(i),label,'_right.png'];
+% fused_path = ['./fused_mf_noise/fused',num2str(i),label,'_dchwt.png'];
 
 % image_left = ['./IV_images/IR',num2str(i),'.png'];
 % image_right = ['./IV_images/VIS',num2str(i),'.png'];
 % fused_path = ['./fused_iv/fused',num2str(i),'_dchwt.png'];
 
-x{1}=imread(image_left);
-x{2}=imread(image_right);
+x{1}=P1;
+x{2}=V1;
 
 % arr=['A';'B'];
 % for m=1:2
@@ -144,7 +157,10 @@ toc
 temp = imresize(xrcw,[M N]);
 
 % figure,imshow(temp);
-imwrite(temp,fused_path,'png');
-
+% imwrite(temp,fused_path,'png');
+% 
+% end
+% end
+T(:,:,s) = temp;
 end
-end
+niftiwrite(T,'outbrain.nii');
