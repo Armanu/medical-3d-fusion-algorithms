@@ -1,0 +1,21 @@
+# State of art 3D image fuision techniques modified for medical images
+This document includes the steps you need to fallow to fuse PET and CT images
+1.Copy all your CT images to ./CT_Images and make sure that every CT image in this folder
+has a pair in PET_Images folder which has the same name.
+
+Algorithm Root
++--- CT_Images
++--- docs
+|    `--- javadoc
++--- libs
++--- maven-repo-test
++--- reports
+|    +--- checkstyle
+|    +--- jacoco
+|    |    `--- test
+|    |         `--- html
+|    `--- tests
+|         `--- test
++--- resources
+`--- tmp
+

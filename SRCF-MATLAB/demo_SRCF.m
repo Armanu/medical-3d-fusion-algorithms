@@ -18,6 +18,28 @@ dataPath = 'Data/GrayscaleDataset';
 
 %====< Fusion of Mutifocus Image Pairs >====%
 res = struct([]);
+% V = niftiread('./HANCT.nii');
+% P = niftiread('./HANPT.nii');
+% PF = P(:);
+% 
+% [x, y, z] = ind2sub(size(P), find(P == max(P(:))));
+% val = P(x,y,z);
+% PMA = max(PF);
+% PMI = min(PF);
+% disp(PMI)
+% disp(PMA)
+% disp("-------")
+% 
+% VF = V(:);
+% VMA = max(VF);
+% VMI = min(VF);
+% disp(VMI)
+% disp(VMA)
+% disp("-------")
+% [ri,ci,si] = size(V);
+% for s = 1:si
+% V1 = (double(squeeze(V(:,:,s)))/(VMA-VMI))*255;
+% P1 = (double(squeeze(P(:,:,s)))/(PMA-PMI))*255;
 for i = 1:dataset.numImage
 
     fprintf('>> start of fusion for image (%d)...\n',i);
