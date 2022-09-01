@@ -35,13 +35,13 @@ ctfilelist = dir(fullfile('C:\Users\Administrator\Downloads\CT\CT\', '*.nii.gz')
 for i = 1:length(ctfilelist)
     newfile = split(string(ctfilelist(i).name),'.');
     newfile = string(newfile{1});
-    newfolder = 'C:\Users\Administrator\Documents\GitHub\medical-3d-fusion-algorithms\CONVSR\OUTPUT\'+newfile+'\';
+    newfolder = 'C:\Users\Administrator\Documents\GitHub\medical-3d-fusion-algorithms\CBF\OUTPUT\'+newfile+'\';
     if ~exist(newfolder, 'dir')
         if exist('C:\Users\Administrator\Downloads\PET\PET\'+string(ctfilelist(i).name), 'file')
             V = niftiread('C:\Users\Administrator\Downloads\CT\CT\'+string(ctfilelist(i).name));
             P = niftiread('C:\Users\Administrator\Downloads\PET\PET\'+string(ctfilelist(i).name));
             clear T;
-            
+
             if ~exist(newfolder,'dir')
                 mkdir(newfolder)
             end

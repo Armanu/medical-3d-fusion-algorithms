@@ -17,13 +17,22 @@ ctfilelist = dir(fullfile('./CT_images/', '*.nii'));
 petfilelist = dir(fullfile('./PET_images/', '*.nii'));
 
 for ctfile = ctfilelist
-    disp(ctfile.folder);
-V = niftiread('./CT_images/'+ctfile.name);
-P = niftiread('./PET_images/'+ctfile.name);
-[ri,ci,si] = size(V);
+P = niftiread('./PET_images/'+string(ctfile.name));
+V = niftiread('./CT_images/'+string(ctfile.name));
+PF = P(:);
+PMA = max(PF);
+PMI = min(PF);
+VF = V(:);
+VMA = max(VF);
+VMI = min(VF);
+[ri,ci,si] = size(P);
+[vri,vci,vsi] = size(V);
+
+P = imresize3(P,[vri,512,263]);
+
 for s = 1:si
-V1 = (double(squeeze(V(:,:,s)))/1000)*255;
-P1 = (double(squeeze(P(:,:,s)))/4)*255;
+V1 = (double(squeeze(V(:,:,s)))/(VMA-VMI))*255;
+P1 = (double(squeeze(P(:,:,s)))/(PMA-PMI))*255;
 
 % path1 = ['./MF_images/image',num2str(index),'_left.png'];
 % path2 = ['./MF_images/image',num2str(index),'_right.png'];
@@ -50,8 +59,8 @@ toc
 %imwrite(fused,fused_path,'png');
 T(:,:,s) = fused;
 end
-niftiwrite(T,'outbrain.nii');
-
+niftiwrite(T,'OUTPUT/'+string(ctfile.name));
+end
 %%-----------------------------------------------------------%%
 %%-----------------------------------------------------------%%
 %%-----------------------------------------------------------%%

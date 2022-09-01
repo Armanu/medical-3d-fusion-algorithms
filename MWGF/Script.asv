@@ -69,7 +69,7 @@ info = niftiinfo('OUTPUT/'+string(ctfile.name));
 
 info.PixelDimensions = infop.PixelDimensions;
 
-Pflip = fliplr(P);
+Pflip = flipud(P);
 niftiwrite(Pflip,'OUTPUT/'+string(ctfile.name),info);
 
 

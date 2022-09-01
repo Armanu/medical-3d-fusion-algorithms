@@ -38,96 +38,124 @@ time = zeros(n,1);
 %%-----------------------------------------------------------%%
 %%-----------------------------------------------------------%%
 
-ctfilelist = dir(fullfile('./CT_images/', '*.nii'));
-petfilelist = dir(fullfile('./PET_images/', '*.nii'));
 
-for ctfile = ctfilelist
-V = niftiread('./CT_images/'+string(ctfile.name));
-P = niftiread('./PET_images/'+string(ctfile.name));
-PF = P(:);
-PMA = max(PF);
-PMI = min(PF);
-VF = V(:);
-VMA = max(VF);
-VMI = min(VF);
-[ri,ci,si] = size(V);
-for s = 1:si
-V1 = (double(squeeze(V(:,:,s)))/(VMA-VMI))*255;
-P1 = (double(squeeze(P(:,:,s)))/(PMA-PMI))*255;
 
-% % testing dataset
-% test_path_ir = './IV_images/IR/';
-% fileFolder_ir=fullfile(test_path_ir);
-% dirOutput_ir =dir(fullfile(fileFolder_ir,'*'));
-% num_ir = length(dirOutput_ir);
-% 
-% test_path_vis = replace(test_path_ir, '/IR/', '/VIS/');
-% fileFolder_vis=fullfile(test_path_vis);
-% dirOutput_vis =dir(fullfile(fileFolder_vis,'*'));
+ctfilelist = dir(fullfile('C:\Users\Administrator\Downloads\CT\CT\', '*.nii.gz'));
 
-% for i=3:num_ir
-%     index = i;
-%     disp(num2str(index));
-%     
-%     % infrared and visible images
-%     path1 = [test_path_ir,dirOutput_ir(i).name]; % IR image
-%     path2 = [test_path_vis,dirOutput_vis(i).name]; % VIS image
-% 
-%     % block - 5*5
-%     % l1 norm
-%    fuse_path5 = ['fused_resnet_zca_',dirOutput_ir(s).name];
-%     
-    image1 = V1;
-    image2 = P1;
-    image1 = im2double(image1);
-    image2 = im2double(image2);
+for i = 1:length(ctfilelist)
+    newfile = split(string(ctfilelist(i).name),'.');
+    newfile = string(newfile{1});
+    newfolder = 'C:\Users\Administrator\Documents\GitHub\medical-3d-fusion-algorithms\ResNet-ZCA\OUTPUT\'+newfile+'\';
+    if ~exist(newfolder, 'dir')
+        if exist('C:\Users\Administrator\Downloads\PET\PET\'+string(ctfilelist(i).name), 'file')
+            V = niftiread('C:\Users\Administrator\Downloads\CT\CT\'+string(ctfilelist(i).name));
+            P = niftiread('C:\Users\Administrator\Downloads\PET\PET\'+string(ctfilelist(i).name));
+            clear T;
 
-    tic;
-    %% Extract features, run the net - ResNet50
-    disp('ResNet');
-    if size(image1, 3)<3
-        I1 = make_3c(image1);
+            if ~exist(newfolder,'dir')
+                mkdir(newfolder)
+            end
+
+            disp("file : "+ string(ctfile(i).name))
+
+
+            PF = P(:);
+            PMA = max(PF);
+            PMI = min(PF);
+            VF = V(:);
+            VMA = max(VF);
+            VMI = min(VF);
+            [ri,ci,si] = size(V);
+            P = imresize3(P,[ri,ci,si]);
+            %             if exist('C:\Users\Administrator\Downloads\Labels\PET\'+string(ctfilelist(i).name), 'file')
+            %                 PL = niftiread('C:\Users\Administrator\Downloads\Labels\PET\'+string(ctfilelist(i).name));
+            %                 CL = niftiread('C:\Users\Administrator\Downloads\Labels\CT\'+string(ctfilelist(i).name));
+            %                 PL =  imresize3(PL,[ri,ci,si]);
+            %                 CL =  imresize3(CL,[ri,ci,si]);
+            %                 niftiwrite(CL,newfolder+newfile+'ctlabel.nii');
+            %                 niftiwrite(PL,newfolder+newfile+'petlabel.nii');
+            %             end
+            for s = 1:si
+                V1 = (double(squeeze(V(:,:,s)))/(VMA-VMI))*255;
+                P1 = (double(squeeze(P(:,:,s)))/(PMA-PMI))*255;
+
+                % % testing dataset
+                % test_path_ir = './IV_images/IR/';
+                % fileFolder_ir=fullfile(test_path_ir);
+                % dirOutput_ir =dir(fullfile(fileFolder_ir,'*'));
+                % num_ir = length(dirOutput_ir);
+                %
+                % test_path_vis = replace(test_path_ir, '/IR/', '/VIS/');
+                % fileFolder_vis=fullfile(test_path_vis);
+                % dirOutput_vis =dir(fullfile(fileFolder_vis,'*'));
+
+                % for i=3:num_ir
+                %     index = i;
+                %     disp(num2str(index));
+                %
+                %     % infrared and visible images
+                %     path1 = [test_path_ir,dirOutput_ir(i).name]; % IR image
+                %     path2 = [test_path_vis,dirOutput_vis(i).name]; % VIS image
+                %
+                %     % block - 5*5
+                %     % l1 norm
+                %    fuse_path5 = ['fused_resnet_zca_',dirOutput_ir(s).name];
+                %
+                image1 = V1;
+                image2 = P1;
+                image1 = im2double(image1);
+                image2 = im2double(image2);
+
+                tic;
+                %% Extract features, run the net - ResNet50
+                disp('ResNet');
+                if size(image1, 3)<3
+                    I1 = make_3c(image1);
+                end
+                if size(image2, 3)<3
+                    I2 = make_3c(image2);
+                end
+                I1 = single(I1) ; % note: 255 range
+                I2 = single(I2) ; % note: 255 range
+
+                % I1
+                disp('run the ResNet - I1');
+                net_res4fx.eval({'data', I1}) ;
+                output4_1 = net_res4fx.vars(net_res4fx.getVarIndex('res4fx')).value ;
+                net_res5cx.eval({'data', I1}) ;
+                output5_1 = net_res5cx.vars(net_res5cx.getVarIndex('res5cx')).value ;
+                % I2
+                disp('run the ResNet - I2');
+                net_res4fx.eval({'data', I2}) ;
+                output4_2 = net_res4fx.vars(net_res4fx.getVarIndex('res4fx')).value ;
+                net_res5cx.eval({'data', I2}) ;
+                output5_2 = net_res5cx.vars(net_res5cx.getVarIndex('res5cx')).value ;
+
+                %% extract features - ZCA & l1-norm operation
+                disp('extract features(whitening operation) - I1');
+                feature4_1 = whitening_norm(output4_1);
+                feature5_1 = whitening_norm(output5_1);
+                disp('extract features(whitening operation) - I2');
+                feature4_2 = whitening_norm(output4_2);
+                feature5_2 = whitening_norm(output5_2);
+
+                %% fusion strategy - resize to original size and soft-max
+                disp('fusion strategy(weighting)');
+                % output4 - 1024
+                [F_relu4, weight4_a, weight4_b] = fusion_strategy(feature4_1, feature4_2, image1, image2);
+                % output5 - 2048
+                [F_relu5, weight5_a, weight5_b] = fusion_strategy(feature5_1, feature5_2, image1, image2);
+                time(i) = toc;
+
+                %     imwrite(F_relu4,fuse_path4,'png');
+                %imwrite(F_relu5,fuse_path5,'png');
+                T(:,:,s) = F_relu5;
+            end
+
+            niftiwrite(T,newfolder+newfile+'.nii');
+
+        end
     end
-    if size(image2, 3)<3
-        I2 = make_3c(image2);
-    end
-    I1 = single(I1) ; % note: 255 range
-    I2 = single(I2) ; % note: 255 range
-
-    % I1
-    disp('run the ResNet - I1');
-    net_res4fx.eval({'data', I1}) ;
-    output4_1 = net_res4fx.vars(net_res4fx.getVarIndex('res4fx')).value ;
-    net_res5cx.eval({'data', I1}) ;
-    output5_1 = net_res5cx.vars(net_res5cx.getVarIndex('res5cx')).value ;
-    % I2
-    disp('run the ResNet - I2');
-    net_res4fx.eval({'data', I2}) ;
-    output4_2 = net_res4fx.vars(net_res4fx.getVarIndex('res4fx')).value ;
-    net_res5cx.eval({'data', I2}) ;
-    output5_2 = net_res5cx.vars(net_res5cx.getVarIndex('res5cx')).value ;
-
-    %% extract features - ZCA & l1-norm operation
-    disp('extract features(whitening operation) - I1');
-    feature4_1 = whitening_norm(output4_1);
-    feature5_1 = whitening_norm(output5_1);
-    disp('extract features(whitening operation) - I2');
-    feature4_2 = whitening_norm(output4_2);
-    feature5_2 = whitening_norm(output5_2);
-
-    %% fusion strategy - resize to original size and soft-max
-    disp('fusion strategy(weighting)');
-    % output4 - 1024
-    [F_relu4, weight4_a, weight4_b] = fusion_strategy(feature4_1, feature4_2, image1, image2);
-    % output5 - 2048
-    [F_relu5, weight5_a, weight5_b] = fusion_strategy(feature5_1, feature5_2, image1, image2);
-    time(i) = toc;
-
-%     imwrite(F_relu4,fuse_path4,'png');
-    %imwrite(F_relu5,fuse_path5,'png');
-T(:,:,s) = F_relu5;
-end
-niftiwrite(T,'OUTPUT/'+string(ctfile.name));
 end
 
 
