@@ -43,7 +43,7 @@ for i = 1:length(ctfilelist)
     newfile = split(string(ctfilelist(i).name),'.');
     newfile = string(newfile{1});
     %disp(newfile)
-    newfolder = 'G:\HYBRID-MSD\'+newfile+'\';
+    newfolder = 'G:\HYBRID-M\'+newfile+'\';
     if ~exist(newfolder, 'dir')
         if exist('G:\Croped\PET\'+newfile+'\'+string(ctfilelist(i).name), 'file')
             V = niftiread('G:\Croped\CT\'+newfile+'\'+string(ctfilelist(i).name));
