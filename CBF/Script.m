@@ -66,8 +66,8 @@ for i = 1:length(ctfilelist)
 %                 niftiwrite(PL,newfolder+newfile+'petlabel.nii');
 %             end
             for s = 1:si
-                V1 = (double(squeeze(V(:,:,s)))/(VMA-VMI))*255;
-                P1 = (double(squeeze(P(:,:,s)))/(PMA-PMI))*255;
+                V1 = uint8(double(squeeze(V(:,:,s)))/(VMA-VMI))*1000;
+                P1 = uint8(double(squeeze(P(:,:,s)))/(PMA-PMI))*1000;
                 
                 x{1}=V1;
                 x{2}=P1;
@@ -85,7 +85,7 @@ for i = 1:length(ctfilelist)
                 %%% Fusion Rule (IEEE Conf 2011).
                 xfused=cbf_ieeeconf2011f(x,detail,cov_wsize);
                                 
-                xfused8=uint8(xfused);
+                xfused8=uint32(xfused);
                 % figure,imshow(xfused8);
                 
                 % imwrite(xfused8,fused_path,'png');

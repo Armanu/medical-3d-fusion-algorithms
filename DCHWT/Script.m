@@ -29,7 +29,7 @@ for i = 1:length(ctfilelist)
                 mkdir(newfolder)
             end
 
-            disp("file : "+ string(ctfile(i).name))
+            disp("file : "+ string(ctfilelist(i).name))
 
 
             PF = P(:);
