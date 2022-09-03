@@ -13,44 +13,35 @@ close all
 %%-----------------------------------------------------------%%
 %%-----------------------------------------------------------%%
 
-ctfilelist = dir(fullfile('C:\Users\Administrator\Downloads\CT\CT\', '*.nii.gz'));
+%%----------------START OF NIFTY FOLDER LOOP-----------------%%
+%%-----------------------------------------------------------%%
+%%-----------------------------------------------------------%%
+%%-----------------------------------------------------------%%
+%%-----------------------------------------------------------%%
+
+
+ctfilelist = dir(fullfile('G:Croped\CT\*\', '*.nii'));
 
 for i = 1:length(ctfilelist)
     newfile = split(string(ctfilelist(i).name),'.');
     newfile = string(newfile{1});
-    newfolder = 'C:\Users\Administrator\Documents\GitHub\medical-3d-fusion-algorithms\Structure-Aware\OUTPUT\'+newfile+'\';
+    %disp(newfile)
+    newfolder = 'G:\VSMWLS\'+newfile+'\';
     if ~exist(newfolder, 'dir')
-        if exist('C:\Users\Administrator\Downloads\PET\PET\'+string(ctfilelist(i).name), 'file')
-            V = niftiread('C:\Users\Administrator\Downloads\CT\CT\'+string(ctfilelist(i).name));
-            P = niftiread('C:\Users\Administrator\Downloads\PET\PET\'+string(ctfilelist(i).name));
+        if exist('G:\Croped\PET\'+newfile+'\'+string(ctfilelist(i).name), 'file')
+            V = niftiread('G:\Croped\CT\'+newfile+'\'+string(ctfilelist(i).name));
+            P = niftiread('G:\Croped\PET\'+newfile+'\'+string(ctfilelist(i).name));
             clear T;
 
             if ~exist(newfolder,'dir')
                 mkdir(newfolder)
             end
 
-            disp("file : "+ string(ctfile(i).name))
-
-
-            PF = P(:);
-            PMA = max(PF);
-            PMI = min(PF);
-            VF = V(:);
-            VMA = max(VF);
-            VMI = min(VF);
+            disp("file : "+ string(ctfilelist(i).name))
             [ri,ci,si] = size(V);
-            P = imresize3(P,[ri,ci,si]);
-            %             if exist('C:\Users\Administrator\Downloads\Labels\PET\'+string(ctfilelist(i).name), 'file')
-            %                 PL = niftiread('C:\Users\Administrator\Downloads\Labels\PET\'+string(ctfilelist(i).name));
-            %                 CL = niftiread('C:\Users\Administrator\Downloads\Labels\CT\'+string(ctfilelist(i).name));
-            %                 PL =  imresize3(PL,[ri,ci,si]);
-            %                 CL =  imresize3(CL,[ri,ci,si]);
-            %                 niftiwrite(CL,newfolder+newfile+'ctlabel.nii');
-            %                 niftiwrite(PL,newfolder+newfile+'petlabel.nii');
-            %             end
             for s = 1:si
-                V1 = (double(squeeze(V(:,:,s)))/(VMA-VMI))*255;
-                P1 = (double(squeeze(P(:,:,s)))/(PMA-PMI))*255;
+                V1 = uint8(squeeze(V(:,:,s))*255);
+                P1 = uint8(squeeze(P(:,:,s))*255);
 
                 % path1 = ['./MF_images/image',num2str(index),'_left.png'];
                 % path2 = ['./MF_images/image',num2str(index),'_right.png'];
